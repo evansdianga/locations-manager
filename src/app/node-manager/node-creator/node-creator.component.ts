@@ -33,9 +33,16 @@ export class NodeCreatorComponent implements OnInit {
 
   toggleCompleteStep3(): void {
     this.stateStep3 = (this.stateStep3 === StepState.Complete ? StepState.None : StepState.Complete);
-  } 
+  }
   ngOnInit() {
-    this.parentNodes = this.locationParentNodesService.getParentNodes();
+    this.dataService.getParentNodes().then(data => {
+      data.map((items) => {
+        this.parentNodes.push({
+          uuid: items.doc._id,
+          label: items.doc.nodeName
+        });
+      });
+    });
     this.controlTypes = this.locationFormControlTypesService.getControlTypes();
   }
 
@@ -52,7 +59,6 @@ export class NodeCreatorComponent implements OnInit {
     this.nodeElements.nodeName = this.form.nodeName;
     this.nodeElements.parent = this.form.selectedParentNode;
     this.dataService.createNode(this.nodeElements);
-    console.log(this.nodeElements);
   }
 
 }
